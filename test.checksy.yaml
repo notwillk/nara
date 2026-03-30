@@ -1,4 +1,7 @@
 rules:
-  - name: placeholder
-    check: echo "Test..."
+  - name: Go tests pass
+    check: go test ./...
+    severity: error
+  - name: Devcontainer feature test
+    check: bash devcontainer-feature/src/nara/test.sh
     severity: error

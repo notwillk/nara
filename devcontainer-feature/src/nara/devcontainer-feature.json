@@ -1,0 +1,12 @@
+{
+  "id": "nara",
+  "version": "1.0.0",
+  "name": "nara",
+  "options": {
+    "version": {
+      "type": "string",
+      "default": "latest",
+      "description": "Version of nara to install (e.g. latest, v1.0.0)"
+    }
+  }
+}

@@ -15,3 +15,7 @@ out/
 # Dependencies
 node_modules/
 vendor/
+
+# Local Go workspace/cache used during development
+.gopath/
+bin

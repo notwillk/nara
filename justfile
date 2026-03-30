@@ -1,8 +1,8 @@
 [no-exit-message]
 build *args:
     @case "{{args}}" in \
-        "") echo "building..." ;; \
-        "--watch") echo "building (with watch)..." ;; \
+        "") mkdir -p bin && go build -o ./bin/nara . ;; \
+        "--watch") watchexec --ignore-file .testignore --ignore bin -- just build ;; \
         *) echo "Usage: just build [--watch]" >&2; exit 1 ;; \
     esac
 
@@ -40,8 +40,9 @@ static *args:
 [no-exit-message]
 test *args:
     @case "{{args}}" in \
+        "") go test ./... && { [ "${SKIP_DEVCONTAINER_FEATURE_TEST:-}" = "1" ] || bash devcontainer-feature/src/nara/test.sh; } ;; \
         "--watch") watchexec $([ -f .testignore ] && echo '--ignore-file .testignore') -- just test ;; \
-        *) checksy --config=test.checksy.yaml diagnose ;; \
+        *) echo "Usage: just test [--watch]" >&2; exit 1 ;; \
     esac
 
 help:
@@ -55,6 +56,6 @@ help:
     @printf "%-24s %s\n" "format --check" "check formatting without modifying files"
     @printf "%-24s %s\n" "static" "run static checks including format check"
     @printf "%-24s %s\n" "static --fix" "run static checks and auto-fix including format"
-    @printf "%-24s %s\n" "test" "run tests"
+    @printf "%-24s %s\n" "test" "run Go tests and devcontainer nara feature test (set SKIP_DEVCONTAINER_FEATURE_TEST=1 for go test only)"
     @printf "%-24s %s\n" "test --watch" "run tests and watch for changes"
     @printf "%-24s %s\n" "help" "show this help"
