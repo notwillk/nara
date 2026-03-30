@@ -1,0 +1,12 @@
+# Swimlane task layout for nara (see PRD).
+#
+# Workflow for dependencies:
+# 1. Create tickets with `swimlane create "Title"` (from repo root; uses --config .swimlane.yaml).
+# 2. Run `swimlane ls --json` and copy each ticket's ULID from the filename or JSON output.
+# 3. Edit frontmatter on dependents: `blocked_by: [<blocking_ulid>, ...]`.
+# 4. Validate with `swimlane static`.
+
+tickets: "tickets/**/*.md"
+default_path: tickets
+default:
+  ready: false
