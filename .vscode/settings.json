@@ -1,0 +1,15 @@
+{
+  "chat.tools.terminal.autoApprove": {
+    "checksy": true,
+    "just": true
+  },
+  "editor.insertSpaces": true,
+  "editor.tabSize": 2,
+  "[just]": {
+    "editor.tabSize": 4,
+  },
+  "json.schemaDownload.trustedDomains": {
+    "https://models.dev/model-schema.json": true,
+    "https://opencode.ai/config.json": true
+  }
+}

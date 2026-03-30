@@ -1,0 +1,31 @@
+{
+  "name": "dev",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+  "features": {
+    "ghcr.io/notwillk/checksy/checksy": {},
+    "ghcr.io/devcontainers/features/docker-in-docker": {},
+    "ghcr.io/notwillk/devcontainer-features/github-cli": {},
+    "ghcr.io/notwillk/devcontainer-features/just": {},
+    "ghcr.io/notwillk/devcontainer-features/jq": {},
+    "ghcr.io/notwillk/devcontainer-features/opencode": {},
+    "ghcr.io/notwillk/devcontainer-features/watchexec": {}
+  },
+  "containerEnv": {
+    "DEVCONTAINER": "true",
+    "FIREWORKS_API_KEY": "${localEnv:FIREWORKS_API_KEY}",
+    "OPENCODE_CONFIG": "${containerWorkspaceFolder}/.opencode/config.json",
+    "REPO_PATH": "${containerWorkspaceFolder}"
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "github.vscode-github-actions",
+        "skellock.just",
+        "sst-dev.opencode"
+      ]
+    }
+  },
+  "remoteUser": "vscode",
+  "postCreateCommand": "just doctor --fix",
+  "postStartCommand": "just doctor"
+}

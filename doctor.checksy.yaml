@@ -1,0 +1,43 @@
+rules:
+  - name: running in devcontainer
+    check: '[ "$DEVCONTAINER" = "true" ]'
+    severity: debug
+
+  - name: Fireworks API key set
+    check: '[ -n "$FIREWORKS_API_KEY" ]'
+    severity: info
+
+  - name: just is available
+    check: 'which just > /dev/null 2>&1'
+    severity: error
+
+  - name: jq is available
+    check: 'which jq > /dev/null 2>&1'
+    severity: error
+
+  - name: watchexec is available
+    check: 'which watchexec > /dev/null 2>&1'
+    severity: error
+
+  - name: opencode is available
+    check: 'which opencode > /dev/null 2>&1'
+    severity: error
+
+  - name: Opencode config set to workspace
+    check: '[ -n "$OPENCODE_CONFIG" ]'
+    severity: error
+
+  - name: vscode extension recommendations match devcontainer
+    check: >
+      diff
+      <(jq -r '.customizations.vscode.extensions[]' .devcontainer/devcontainer.json | sort)
+      <(jq -r '.recommendations[]' .vscode/extensions.json | sort)
+      > /dev/null 2>&1
+    severity: warn
+    fix: |
+      set -e
+      jq -r '.customizations.vscode.extensions[]' .devcontainer/devcontainer.json | sort > /tmp/_dc_ext.txt
+      jq -r '.recommendations[]' .vscode/extensions.json | sort > /tmp/_vsc_ext.txt
+      UNION=$(sort -u /tmp/_dc_ext.txt /tmp/_vsc_ext.txt | jq -Rcs '[split("\n")[] | select(length > 0)]')
+      jq --argjson u "$UNION" '.recommendations = $u' .vscode/extensions.json > /tmp/_vscode_ext.json && mv /tmp/_vscode_ext.json .vscode/extensions.json
+      jq --argjson u "$UNION" '.customizations.vscode.extensions = $u' .devcontainer/devcontainer.json > /tmp/_dc_ext.json && mv /tmp/_dc_ext.json .devcontainer/devcontainer.json

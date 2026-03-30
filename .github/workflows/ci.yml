@@ -1,0 +1,76 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  devcontainer:
+    name: Build Devcontainer
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    outputs:
+      image_tag: ${{ steps.image_tag.outputs.image_tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compute image tag
+        id: image_tag
+        run: echo "image_tag=${{ hashFiles('.devcontainer/**') }}" >> "$GITHUB_OUTPUT"
+      - name: Login to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - name: Build and push devcontainer
+        uses: devcontainers/ci@v0.3
+        with:
+          imageName: ghcr.io/${{ github.repository }}/devcontainer
+          imageTag: ${{ steps.image_tag.outputs.image_tag }}
+          cacheFrom: ghcr.io/${{ github.repository }}/devcontainer:${{ steps.image_tag.outputs.image_tag }}
+          push: always
+
+  static:
+    name: Run Static Analysis
+    needs: devcontainer
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - uses: devcontainers/ci@v0.3
+        with:
+          imageName: ghcr.io/${{ github.repository }}/devcontainer
+          imageTag: ${{ needs.devcontainer.outputs.image_tag }}
+          cacheFrom: ghcr.io/${{ github.repository }}/devcontainer:${{ needs.devcontainer.outputs.image_tag }}
+          push: never
+          runCmd: just static
+
+  test:
+    name: Run Tests
+    needs: devcontainer
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to GHCR
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+      - uses: devcontainers/ci@v0.3
+        with:
+          imageName: ghcr.io/${{ github.repository }}/devcontainer
+          imageTag: ${{ needs.devcontainer.outputs.image_tag }}
+          cacheFrom: ghcr.io/${{ github.repository }}/devcontainer:${{ needs.devcontainer.outputs.image_tag }}
+          push: never
+          runCmd: just test
+
+  done:
+    name: 🥳
+    needs: [test, static]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Done"

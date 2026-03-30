@@ -1,0 +1,15 @@
+.devcontainer
+.git/
+.gitattributes
+.github
+.gitignore
+.schemas
+.testignore
+.vscode/
+dist/
+node_modules/
+docs/
+LICENSE
+*.log
+*.md
+*.txt

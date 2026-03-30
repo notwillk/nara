@@ -1,0 +1,8 @@
+rules:
+  - name: no trailing whitespace in yaml/json
+    check: '! git ls-files -- "*.yaml" "*.json" | xargs grep -Hn " $"'
+    severity: error
+  - name: no pending format issues
+    check: just format --check
+    fix: just format
+    severity: error
