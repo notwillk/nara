@@ -27,6 +27,11 @@ rules:
     check: '[ -n "$OPENCODE_CONFIG" ]'
     severity: error
 
+  - name: Go packages are downloaded locally
+    check: 'GOPROXY=off go list -mod=readonly -deps ./... > /dev/null 2>&1'
+    severity: error
+    fix: go mod download
+
   - name: vscode extension recommendations match devcontainer
     check: >
       diff

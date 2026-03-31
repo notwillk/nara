@@ -18,7 +18,9 @@
     "DEVCONTAINER": "true",
     "FIREWORKS_API_KEY": "${localEnv:FIREWORKS_API_KEY}",
     "OPENCODE_CONFIG": "${containerWorkspaceFolder}/.opencode/config.json",
-    "REPO_PATH": "${containerWorkspaceFolder}"
+    "REPO_PATH": "${containerWorkspaceFolder}",
+    "GOMODCACHE": "${containerWorkspaceFolder}/.devcontainer-cache/go-mod",
+    "GOCACHE": "${containerWorkspaceFolder}/.devcontainer-cache/go-build"
   },
   "customizations": {
     "vscode": {
@@ -31,5 +33,6 @@
   },
   "remoteUser": "vscode",
   "postCreateCommand": "just doctor --fix",
-  "postStartCommand": "just doctor"
+  "postStartCommand": "just doctor",
+  "updateContentCommand": "if [ -f go.mod ]; then go mod download; fi"
 }
