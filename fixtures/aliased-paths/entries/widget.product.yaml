@@ -1,0 +1,6 @@
+$id: widget
+$schema: product
+name: Widget
+price: 19.99
+supplier:
+  $ref: ~shared/acme.supplier.yaml

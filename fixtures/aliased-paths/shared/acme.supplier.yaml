@@ -1,0 +1,4 @@
+$id: acme
+$schema: supplier
+name: Acme Supply Co
+contact: sales@acme.example

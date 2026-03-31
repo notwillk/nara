@@ -1,0 +1,7 @@
+$id: team
+$schema: person
+name: Platform Team
+role: Team
+reports:
+  - $ref: lead
+  - $ref: dev

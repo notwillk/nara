@@ -1,0 +1,7 @@
+$id: hello
+$schema: note
+title: Hello
+body: A minimal single-file note fixture.
+tags:
+  - intro
+  - yaml

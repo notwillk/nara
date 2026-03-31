@@ -1,0 +1,6 @@
+$id: lead
+$schema: person
+name: Riley Lead
+role: Engineering Lead
+manager:
+  $ref: ceo

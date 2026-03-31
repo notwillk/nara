@@ -1,0 +1,6 @@
+$id: dev
+$schema: person
+name: Quinn Dev
+role: Engineer
+manager:
+  $ref: lead

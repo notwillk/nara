@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	"github.com/notwillk/nara/internal/configschema"
 	"github.com/spf13/cobra"
 )
 
@@ -12,9 +11,7 @@ func newFormatCmd() *cobra.Command {
 		Short: "Update config schema only",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			_ = configPath
-			return fmt.Errorf("format not implemented yet")
+			return configschema.Format(configPath)
 		},
 	}
 }
-
