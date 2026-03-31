@@ -8,6 +8,7 @@ import (
 
 	"github.com/notwillk/nara/internal/config"
 	"github.com/notwillk/nara/internal/errors"
+	"github.com/notwillk/nara/internal/naming"
 	"gopkg.in/yaml.v3"
 )
 
@@ -39,7 +40,6 @@ func Load(path string, cfg *config.Config) (*Entity, error) {
 		return nil, errors.New(errors.CategoryValidation, path, "unsupported entity extension")
 	}
 
-	inferredID, inferredSchema := InferFromFilename(path)
 	metaID := cfg.Meta.ID
 	metaSchema := cfg.Meta.Schema
 	if metaID == "" {
@@ -49,20 +49,25 @@ func Load(path string, cfg *config.Config) (*Entity, error) {
 		metaSchema = "$schema"
 	}
 
-	id := stringValue(data[metaID])
-	schemaName := stringValue(data[metaSchema])
+	rawID := stringValue(data[metaID])
+	rawSchema := stringValue(data[metaSchema])
+	inferredID, inferredSchema, _ := naming.InferFromPath(path, cfg.Resolution.FilenamePattern)
+
+	id := rawID
 	if id == "" {
 		id = inferredID
 	}
+	schemaName := rawSchema
 	if schemaName == "" {
 		schemaName = inferredSchema
 	}
 	if id == "" || schemaName == "" {
 		return nil, errors.New(errors.CategoryValidation, path, "unable to infer id/schema")
 	}
-
-	// If $schema exists, it must match inferred schema when inferable.
-	if inferredSchema != "" && stringValue(data[metaSchema]) != "" && schemaName != inferredSchema {
+	if inferredID != "" && rawID != "" && rawID != inferredID {
+		return nil, errors.New(errors.CategoryValidation, path, "entity $id does not match filename id")
+	}
+	if inferredSchema != "" && rawSchema != "" && schemaName != inferredSchema {
 		return nil, errors.New(errors.CategoryValidation, path, "entity $schema does not match filename schema")
 	}
 
@@ -75,18 +80,11 @@ func Load(path string, cfg *config.Config) (*Entity, error) {
 }
 
 func InferFromFilename(path string) (id string, schema string) {
-	base := filepath.Base(path)
-	ext := filepath.Ext(base)
-	name := strings.TrimSuffix(base, ext)
-	parts := strings.Split(name, ".")
-	if len(parts) < 2 {
-		return "", ""
-	}
-	return strings.Join(parts[:len(parts)-1], "."), parts[len(parts)-1]
+	id, schema, _ = naming.InferFromPath(path, naming.TokenID+"."+naming.TokenSchema)
+	return id, schema
 }
 
 func stringValue(v any) string {
 	s, _ := v.(string)
 	return s
 }
-

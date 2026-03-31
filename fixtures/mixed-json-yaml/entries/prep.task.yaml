@@ -1,0 +1,6 @@
+$id: prep
+$schema: task
+title: Prepare release notes
+status: done
+metadata:
+  channel: ops

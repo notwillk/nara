@@ -1,0 +1,14 @@
+{
+  "$id": "release",
+  "$schema": "task",
+  "title": "Ship release",
+  "status": "todo",
+  "dependsOn": [
+    {
+      "$ref": "./prep"
+    }
+  ],
+  "metadata": {
+    "channel": "eng"
+  }
+}

@@ -5,3 +5,6 @@ rules:
   - name: Devcontainer feature test
     check: bash devcontainer-feature/src/nara/test.sh
     severity: error
+  - name: Fixture integration tests
+    check: bash fixtures/test.sh
+    severity: error

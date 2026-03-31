@@ -1,0 +1,19 @@
+version: 1
+paths:
+  "/": entries
+  "~shared": shared
+meta:
+  ref: "$ref"
+  id: "$id"
+  schema: "$schema"
+  includeKeys: []
+schemas:
+  sources:
+    - schemas/*.cue
+  inferFromFilename: true
+resolution:
+  filenamePattern: <id>.<schema>
+  extensions:
+    - .yaml
+    - .yml
+    - .json

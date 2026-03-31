@@ -33,7 +33,7 @@ func newCompileCmd() *cobra.Command {
 			case "json":
 				return emitter.WriteJSON(outPath, result.Entries, mustLoadConfigForEmit())
 			case "sqlite":
-				return fmt.Errorf("sqlite emitter not implemented yet")
+				return emitter.WriteSQLite(outPath, result.Graph, mustLoadConfigForEmit())
 			default:
 				return fmt.Errorf("unsupported --format: %s", format)
 			}
@@ -48,9 +48,7 @@ func newCompileCmd() *cobra.Command {
 func mustLoadConfigForEmit() *config.Config {
 	cfg, err := config.Load(configPath)
 	if err != nil {
-		// compile already loads/validates config; this should be unreachable.
 		return &config.Config{}
 	}
 	return cfg
 }
-

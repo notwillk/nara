@@ -1,8 +1,7 @@
 package cmd
 
 import (
-	"fmt"
-
+	internallint "github.com/notwillk/nara/internal/lint"
 	"github.com/spf13/cobra"
 )
 
@@ -12,9 +11,7 @@ func newLintCmd() *cobra.Command {
 		Short: "Validate workspace correctness (no mutations)",
 		Args:  cobra.NoArgs,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			_ = configPath
-			return fmt.Errorf("lint not implemented yet")
+			return internallint.Run(configPath)
 		},
 	}
 }
-
