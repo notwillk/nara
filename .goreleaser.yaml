@@ -15,7 +15,7 @@ builds:
       - -s
       - -w
       # CI sets VERSION to the git tag; otherwise use .Tag from the release ref; else local-build.
-      - -X=github.com/notwillk/nara/internal/version.Version={{ (index .Env "VERSION") | default .Tag | default "local-build" }}
+      - -X=github.com/notwillk/nara/internal/version.Version={{ if (index .Env "VERSION") }}{{ index .Env "VERSION" }}{{ else if .Tag }}{{ .Tag }}{{ else }}local-build{{ end }}
     env:
       - CGO_ENABLED=0
     goos:
