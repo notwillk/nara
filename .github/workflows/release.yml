@@ -33,19 +33,3 @@ jobs:
         with:
           version: latest
           args: release --clean
-
-      - name: Log in to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Publish Devcontainer Feature
-        uses: devcontainers/action@v1
-        with:
-          publish-features: "true"
-          base-path-to-features: "./devcontainer-feature/src"
-          features-namespace: "notwillk/nara"
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

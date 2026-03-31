@@ -1,0 +1,32 @@
+name: Release devcontainer features
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    if: ${{ github.ref == 'refs/heads/main' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Test Features
+        uses: devcontainers/ci@v0.3
+        with:
+          runCmd: just test
+
+      - name: Publish Features
+        uses: devcontainers/action@v1
+        with:
+          publish-features: "true"
+          base-path-to-features: "./devcontainer-feature/src"
+          features-namespace: "notwillk/nara"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
