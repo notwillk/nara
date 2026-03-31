@@ -14,25 +14,14 @@ jobs:
 
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      # Exposed for clarity; GoReleaser also reads the git tag after checkout and injects it via ldflags (.Tag).
+      VERSION: ${{ github.ref_name }}
 
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
-      - name: Ensure tag matches version
-        run: |
-          TAG="${GITHUB_REF##*/}"
-          VERSION=$(grep -Eo 'Version = "[^"]+"' internal/version/version.go | sed -E 's/Version = "([^"]+)"/\1/')
-          if [ -z "$VERSION" ]; then
-            echo "Unable to determine version from internal/version/version.go" >&2
-            exit 1
-          fi
-          if [ "v${VERSION}" != "$TAG" ]; then
-            echo "Tag $TAG does not match internal/version/version.go v${VERSION}" >&2
-            exit 1
-          fi
 
       - name: Set up Go
         uses: actions/setup-go@v5

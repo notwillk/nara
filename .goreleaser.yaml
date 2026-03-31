@@ -11,6 +11,11 @@ builds:
   - id: nara
     binary: nara
     main: .
+    ldflags:
+      - -s
+      - -w
+      # CI sets VERSION to the git tag; otherwise use .Tag from the release ref; else local-build.
+      - -X=github.com/notwillk/nara/internal/version.Version={{ (index .Env "VERSION") | default .Tag | default "local-build" }}
     env:
       - CGO_ENABLED=0
     goos:

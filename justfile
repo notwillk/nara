@@ -1,9 +1,24 @@
 [no-exit-message]
 build *args:
-    @case "{{args}}" in \
-        "") mkdir -p bin && go build -o ./bin/nara . ;; \
-        "--watch") watchexec --ignore-file .testignore --ignore bin -- just build ;; \
-        *) echo "Usage: just build [--watch]" >&2; exit 1 ;; \
+    #!/usr/bin/env bash
+    set -euo pipefail
+    case "{{args}}" in
+        "")
+            mkdir -p bin
+            V="${VERSION:-${VERSION:-}}"
+            if [ -n "$V" ]; then
+                go build -o ./bin/nara -ldflags "-X github.com/notwillk/nara/internal/version.Version=${V}" .
+            else
+                go build -o ./bin/nara .
+            fi
+            ;;
+        "--watch")
+            watchexec --ignore-file .testignore --ignore bin -- just build
+            ;;
+        *)
+            echo "Usage: just build [--watch]" >&2
+            exit 1
+            ;;
     esac
 
 [no-exit-message]
@@ -40,13 +55,17 @@ static *args:
 [no-exit-message]
 test *args:
     @case "{{args}}" in \
-        "") go test ./... && { [ "${SKIP_DEVCONTAINER_FEATURE_TEST:-}" = "1" ] || bash devcontainer-feature/src/nara/test.sh; } ;; \
+        "") checksy --config test.checksy.yaml diagnose && { [ "${SKIP_DEVCONTAINER_FEATURE_TEST:-}" = "1" ] || bash devcontainer-feature/src/nara/test.sh; } ;; \
         "--watch") watchexec $([ -f .testignore ] && echo '--ignore-file .testignore') -- just test ;; \
         *) echo "Usage: just test [--watch]" >&2; exit 1 ;; \
     esac
 
+[no-exit-message]
+release part="patch":
+    @bash "{{justfile_directory()}}/release.sh" "{{part}}"
+
 help:
-    @printf "%-24s %s\n" "build" "compile the project"
+    @printf "%-24s %s\n" "build" "compile to bin/nara (optional VERSION or VERSION for -ldflags)"
     @printf "%-24s %s\n" "build --watch" "compile and watch for changes"
     @printf "%-24s %s\n" "clean" "remove build artifacts"
     @printf "%-24s %s\n" "clean --deep" "remove build artifacts and generated files"
@@ -58,4 +77,5 @@ help:
     @printf "%-24s %s\n" "static --fix" "run static checks and auto-fix including format"
     @printf "%-24s %s\n" "test" "run Go tests and devcontainer nara feature test (set SKIP_DEVCONTAINER_FEATURE_TEST=1 for go test only)"
     @printf "%-24s %s\n" "test --watch" "run tests and watch for changes"
+    @printf "%-24s %s\n" "release [part]" "tag and push v#.#.# from GitHub latest release + bump2version (part: patch|minor|major)"
     @printf "%-24s %s\n" "help" "show this help"

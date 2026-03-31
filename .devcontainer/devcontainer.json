@@ -5,6 +5,7 @@
     "ghcr.io/notwillk/checksy/checksy": {},
     "ghcr.io/notwillk/swimlane/swimlane": {},
     "ghcr.io/devcontainers/features/docker-in-docker": {},
+    "ghcr.io/notwillk/devcontainer-features/bump2version": {},
     "ghcr.io/notwillk/devcontainer-features/devcontainer-cli": {},
     "ghcr.io/notwillk/devcontainer-features/github-cli": {},
     "ghcr.io/notwillk/devcontainer-features/golang": {},
