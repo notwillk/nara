@@ -17,6 +17,14 @@ jobs:
       image_tag: ${{ steps.image_tag.outputs.image_tag }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .devcontainer-cache/go-mod
+            .devcontainer-cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
       - name: Compute image tag
         id: image_tag
         run: echo "image_tag=${{ hashFiles('.devcontainer/**') }}" >> "$GITHUB_OUTPUT"
@@ -39,6 +47,14 @@ jobs:
       packages: read
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .devcontainer-cache/go-mod
+            .devcontainer-cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
       - name: Login to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - uses: devcontainers/ci@v0.3
@@ -58,6 +74,14 @@ jobs:
       packages: read
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/cache@v4
+        with:
+          path: |
+            .devcontainer-cache/go-mod
+            .devcontainer-cache/go-build
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
       - name: Login to GHCR
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - uses: devcontainers/ci@v0.3
