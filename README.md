@@ -17,7 +17,7 @@ In practice, `nara` helps with a few concrete jobs:
 - scaffolding a new project
 - compiling resolved entities to YAML, JSON, or SQLite
 
-The [`fixtures/`](/Users/willk/Projects/github.com/notwillk/nara/fixtures) directory contains representative sample workspaces you can use to try the CLI.
+The [`fixtures/`](./nara/fixtures) directory contains representative sample workspaces you can use to try the CLI.
 
 ## Overview
 
